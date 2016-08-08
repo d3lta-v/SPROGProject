@@ -27,6 +27,8 @@ void initCommandForDatabaseFile(fstream& database);
 void printDBInRAM();
 void addColumn();
 void addRow();
+void delColumn();
+void delRow();
 void commitChanges();
 
 char* sanitisedString(char* string);
@@ -154,6 +156,12 @@ void initCommandForDatabaseFile(fstream& database) {
         } else if (strncmp(commandBuffer, "ADDROW", 6) == 0) {
             // Add row
             addRow();
+        } else if (strncmp(commandBuffer, "DELCOL", 6) == 0) {
+            // Delete column
+            delColumn();
+        } else if (strncmp(commandBuffer, "DELROW", 6) == 0) {
+            // Delete row
+            delRow();
         } else if (strncmp(commandBuffer, "MODIFY", 6) == 0) {
             // Modify at row/column
 
@@ -173,7 +181,9 @@ void printDBInRAM() {
     cout << "\nRow count: " << rowCount << endl;
     cout << "Column count: " << columnCount << endl << endl;
 
-    printSeparator(columnCount);
+    if (rowCount > 1) {
+        printSeparator(columnCount);
+    }
     for (int i = 0; i < rowCount; i++) {
         cout << "|";
         for (int j = 0; j < columnCount; j++) {
@@ -187,7 +197,9 @@ void printDBInRAM() {
             cout << "\n";
         }
     }
-    printSeparator(columnCount);
+    if (rowCount > 1) {
+        printSeparator(columnCount);
+    }
     cout << endl;
 }
 
@@ -212,9 +224,45 @@ void addRow() {
         cin >> identifier;
         rowCount++;
         strcpy(database[rowCount-1][0], identifier);
-        cout << "Row added with identier " << identifier << endl;
+        cout << "Row added with identifier " << identifier << endl;
     } else {
         cout << "No columns to add rows to!";
+    }
+}
+
+void delColumn() {
+    if (columnCount > 0) {
+        char choice;
+        cout << "Are you sure you want to delete the last column? (y/n): ";
+        cin >> choice;
+        if (choice == 'y') {
+            columnCount--;
+            cout << "Column deleted" << endl;
+        } else if (choice == 'n') {
+            cout << "Database unmodified" << endl;
+        } else {
+            cout << "Invalid input. Not modifying database." << endl;
+        }
+    } else {
+        cout << "No more columns to delete!" << endl;
+    }
+}
+
+void delRow() {
+    if (rowCount > 0) {
+        char choice;
+        cout << "Are you sure you want to delete the last row? (y/n): ";
+        cin >> choice;
+        if (choice == 'y') {
+            rowCount--;
+            cout << "Row deleted" << endl;
+        } else if (choice == 'n') {
+            cout << "Database unmodified" << endl;
+        } else {
+            cout << "Invalid input. Not modifying database." << endl;
+        }
+    } else {
+        cout << "No more rows to delete!" << endl;
     }
 }
 
