@@ -29,6 +29,7 @@ void addColumn();
 void addRow();
 void delColumn();
 void delRow();
+void modify();
 void commitChanges();
 
 char* sanitisedString(char* string);
@@ -164,7 +165,7 @@ void initCommandForDatabaseFile(fstream& database) {
             delRow();
         } else if (strncmp(commandBuffer, "MODIFY", 6) == 0) {
             // Modify at row/column
-
+            modify();
         } else if (strncmp(commandBuffer, "COMMIT", 6) == 0) {
             // Commit changes to file
             commitChanges();
@@ -281,7 +282,12 @@ void modify() {
         cout << "Column number is larger than total row count. Please create a new column first";
         return;
     }
-    //TODO:finish the modify function!
+
+    char dataBuffer[20];
+    cout << "Enter data for column " << column << ", row " << row << " : ";
+    cin >> dataBuffer;
+    strcpy(database[row-1][column-1], dataBuffer);
+    cout << "Entry added" << endl;
 }
 
 void commitChanges() {
