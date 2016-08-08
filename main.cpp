@@ -104,23 +104,23 @@ void startDBWithFileName() {
         // Getting by rows
         string line;
         while (getline(dbFile, line)) {
-            columnCount = 0; // reset column count every time when the program gets to a new row
+            int localColumnCount = 0; // reset column count every time when the program gets to a new row
             // Turn the string into a C string (char array) for compliance with the cstring library
             char lineWithCString[50];
             strcpy(lineWithCString, line.c_str());
             char * pch; //pointer to the position of characters split by a delimiter
             pch = strtok(lineWithCString, " "); //space as a delimiter, and yes, we need " " because it accepts only a const char *, NOT const char (in other words, char array, not char)
             while (pch != NULL) {
-                strcpy(database[rowCount][columnCount], pch);
-                columnCount++;
+                strcpy(database[rowCount][localColumnCount], pch);
+                localColumnCount++;
+                if (rowCount == 0) { // if it's first row
+                    columnCount++;
+                }
                 pch = strtok(NULL, " ");
             }
             rowCount++;
         }
     }
-
-    // Print out DB in RAM
-    //printDBInRAM();
 
     // Enter command mode for database
     initCommandForDatabaseFile(dbFile);
