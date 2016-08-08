@@ -26,6 +26,7 @@ void startDBWithFileName();
 void initCommandForDatabaseFile(fstream& database);
 void printDBInRAM();
 void addColumn();
+void addRow();
 void commitChanges();
 
 char* sanitisedString(char* string);
@@ -150,6 +151,9 @@ void initCommandForDatabaseFile(fstream& database) {
         } else if (strncmp(commandBuffer, "ADDCOL", 6) == 0) {
             // Add column
             addColumn();
+        } else if (strncmp(commandBuffer, "ADDROW", 6) == 0) {
+            // Add row
+            addRow();
         } else if (strncmp(commandBuffer, "MODIFY", 6) == 0) {
             // Modify at row/column
 
@@ -175,7 +179,7 @@ void printDBInRAM() {
         for (int j = 0; j < columnCount; j++) {
             cout << setw(20) << database[i][j] << setfill(' ') << " | ";
         }
-        if (i==0 && columnCount > 1) {
+        if (i==0 && rowCount > 1) {
             // Add a separator at the first row
             cout << "\n";
             printSeparator(columnCount);
@@ -198,6 +202,20 @@ void addColumn() {
     }
     strcpy(database[0][columnCount-1], identifier);
     cout << "Column added with identifier " << identifier << endl;
+}
+
+void addRow() {
+    if (columnCount > 0) { // if there are columns
+        // proceed with adding a row
+        char identifier[20];
+        cout << "Enter row identifier: ";
+        cin >> identifier;
+        rowCount++;
+        strcpy(database[rowCount-1][0], identifier);
+        cout << "Row added with identier " << identifier << endl;
+    } else {
+        cout << "No columns to add rows to!";
+    }
 }
 
 void modify() {
