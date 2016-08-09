@@ -1,8 +1,8 @@
-// ---------------------------------------
+// ------------------------------------------------------
 // FIDB Database Management System v0.1a
-// Made by Pan Ziyue, Sean Tin,
+// Made by Pan Ziyue, Sean Tin, Chai Yaw, Adrian, Jinyao
 // Copyright 2016 (C) All Rights Reserved
-// ---------------------------------------
+// ------------------------------------------------------
 
 #include <iostream>
 #include <fstream>
