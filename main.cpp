@@ -80,7 +80,7 @@ void startDBWithFileName() {
     cout << "\nPlease enter file name of database file to manage (maximum 20 characters): ";
     cin >> databaseName;
     fstream dbFile; // initialise flatfile database
-    fstream testDbFile(databaseName);
+    fstream testDbFile(databaseName); // This is only for testing if the file exists
 
     // Check if db file exists and if not prompt to create new file
     if (!fileExists(testDbFile)) {
@@ -145,7 +145,7 @@ void initCommandForDatabaseFile(fstream& database) {
         cin >> commandBuffer;
         // Parse the command the user entered, using strncmp for string comparison
         if (strncmp(commandBuffer, "HELP", 4) == 0) {
-            cout << "Help file not implemented" << endl;
+            printHelpFile();
         } else if (strncmp(commandBuffer, "EXIT", 4) == 0 || strncmp(commandBuffer, "QUIT", 4) == 0) {
             cout << "Quitting database manager..." << endl;
             break;
@@ -292,7 +292,7 @@ void modify() {
 
 void commitChanges() {
     // Construct a single string that will write to the file, this process is essentially serialisation
-    char flatStringForFile[500] = {0x0};
+    char flatStringForFile[1000] = {0x0};
     int currentFlatStrIndex = 0;
     // For loop for rows
     for (size_t i = 0; i < rowCount; i++) {
@@ -369,7 +369,37 @@ int fileEmpty(fstream& pFile) {
 }
 
 void printHelpFile() {
-    cout << "Help file not implemented yet" << endl;
+    cout << "------------------------------------\n";
+    cout << " FIDB Operator's Instruction Manual\n";
+    cout << " For version v0.1a\n";
+    cout << "------------------------------------\n\n";
+    cout << "All available help topics:\n1. Introduction\n2. Commands\n3. File formats\n";
+    cout << "Select help topic to view: ";
+    int selection;
+    cin >> selection;
+    cout << endl;
+    if (selection == 1) {
+        // Introduction
+        cout << "Introduction to FIDB:\n";
+        cout << "FIDB is a simple database management system for flatfile database systems.\n";
+        cout << "Written in C++, and uses only basic C++ headers, such as iostream, iomanip, fstream and cstring\n";
+        cout << "The manager uses a command-line like system to interpret user input, and uses space delimited csv files.\n";
+        cout << "However, this database only handles up to 20 rows by 20 columns by 20 characters, as a limitation of not\n being able to manually allocate memory due to time and library constraints" << endl;
+    } else if (selection == 2) {
+        cout << "Commands in FIDB:\n";
+        cout << "DUMPDB:\nDumps the contents of the database in memory onto the screen.\n";
+        cout << "MODIFY:\nModifies the database at a certain row/column combination.\n";
+        cout << "COMMIT:\nSaves the database in memory to file.\n";
+        cout << "ADDCOL/ADDROW:\nAppends a new row or column to the right/bottom of a table.\n";
+        cout << "DELCOL/DELROW:\nDeletes the rightmost or bottomost row or column.\n";
+        cout << "HELP:\nBrings up this help file.\n";
+        cout << "EXIT/QUIT:\nExits the database manager. NOTE: This will NOT save the database to memory!" << endl;
+    } else if (selection == 3) {
+        cout << "File formats for FIDB:\n";
+        cout << "FIDB uses a simple flatfile format called CSV. Originally known as \"Comma Separated Values\", the \nchoice of a delimiter (In the previous case, commas), are not limited to commas as CSV is an open arbitrary standard. Therefore, \nin FIDB, spaces are used instead to guarentee interoperability of the program. Newlines are used as row delimiters while spaces \nare used as column delimiters.\nFIDB accepts any ASCII encoded, space delimited CSV style document." << endl;
+    } else {
+        cout << "Invalid selection, exiting program" << endl;
+    }
 }
 
 /*
