@@ -295,11 +295,11 @@ void commitChanges() {
     char flatStringForFile[1000] = {0x0};
     int currentFlatStrIndex = 0;
     // For loop for rows
-    for (size_t i = 0; i < rowCount; i++) {
+    for (int i = 0; i < rowCount; i++) {
         // For loop for columns
-        for (size_t j = 0; j < columnCount; j++) {
+        for (int j = 0; j < columnCount; j++) {
             // For loop for characters
-            for (size_t c = 0; c < 20; c++) { //max 20 characters, have to hardcode due to limitations of C-style character arrays
+            for (int c = 0; c < 20; c++) { //max 20 characters, have to hardcode due to limitations of C-style character arrays
                 if (database[i][j][c] != '\0') {
                     flatStringForFile[currentFlatStrIndex] = database[i][j][c];
                     currentFlatStrIndex++;
