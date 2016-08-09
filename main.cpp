@@ -14,7 +14,7 @@ using namespace std;
 // Global variables
 // Primary database in RAM, constrained to 20 by 20 entries, totalling 8kb
 char database[20][20][20] = {0x0}; //init to all NULL values for safety
-char databaseName[20];
+char databaseName[20]; //global storage for the database name
 // Database row and column counts
 int rowCount = 0;
 int columnCount = 0;
@@ -62,6 +62,7 @@ void printInitialisationMessage() {
     cout << "----------------------------------------------------\n" << endl;
 }
 
+/// Starting choice selection for the user
 int choiceSelection() {
     int choice;
     cout << "Select command to perform:\n";
@@ -76,6 +77,7 @@ int choiceSelection() {
     }
 }
 
+/// Starting point of the main program
 void startDBWithFileName() {
     cout << "\nPlease enter file name of database file to manage (maximum 20 characters): ";
     cin >> databaseName;
@@ -103,7 +105,7 @@ void startDBWithFileName() {
     }
     testDbFile.close();
 
-    // Start the manager proper
+    // Start the manager here
 
     // Check if file is empty
     dbFile.open(databaseName);
@@ -137,6 +139,7 @@ void startDBWithFileName() {
     initCommandForDatabaseFile(dbFile);
 }
 
+/// Starts the command mode for the database, for an fstream
 void initCommandForDatabaseFile(fstream& database) {
     char commandBuffer[30] = {0x0}; // maximum 30 characters in a single command
     cout << "\nDatabase loaded, command mode initialised\n";
@@ -178,6 +181,7 @@ void initCommandForDatabaseFile(fstream& database) {
 
 // Command functions
 
+/// Prints the contents of the database in RAM to screen
 void printDBInRAM() {
     cout << "\nRow count: " << rowCount << endl;
     cout << "Column count: " << columnCount << endl << endl;
@@ -204,6 +208,7 @@ void printDBInRAM() {
     cout << endl;
 }
 
+/// Adds column to database
 void addColumn() {
     char identifier[20];
     cout << "Enter column identifier: ";
@@ -217,6 +222,7 @@ void addColumn() {
     cout << "Column added with identifier " << identifier << endl;
 }
 
+/// Adds row to database
 void addRow() {
     if (columnCount > 0) { // if there are columns
         // proceed with adding a row
@@ -231,6 +237,7 @@ void addRow() {
     }
 }
 
+/// Deletes column from database
 void delColumn() {
     if (columnCount > 0) {
         char choice;
@@ -249,6 +256,7 @@ void delColumn() {
     }
 }
 
+/// Deletes row from database
 void delRow() {
     if (rowCount > 0) {
         char choice;
@@ -267,6 +275,7 @@ void delRow() {
     }
 }
 
+/// Modifies a specific row/column combination in database
 void modify() {
     //NOTE: row and column are indexed from 1, NOT 0!
     int row, column;
@@ -290,6 +299,7 @@ void modify() {
     cout << "Entry added" << endl;
 }
 
+/// Write changes to database to file
 void commitChanges() {
     // Construct a single string that will write to the file, this process is essentially serialisation
     char flatStringForFile[1000] = {0x0};
@@ -368,6 +378,22 @@ int fileEmpty(fstream& pFile) {
     return pFile.peek() == fstream::traits_type::eof();
 }
 
+/*
+    Prints the appropriate number of '-' characters for a certain number of columns
+
+    - parameter columnCount: the number of columns to print a separator for
+*/
+void printSeparator(int columnCount) {
+    for (int i = 0; i < 23*columnCount+1; i++) {
+        if (i == 23*columnCount) {
+            cout << "\n";
+        } else {
+            cout << "-";
+        }
+    }
+}
+
+/// Prints help file
 void printHelpFile() {
     cout << "------------------------------------\n";
     cout << " FIDB Operator's Instruction Manual\n";
@@ -399,20 +425,5 @@ void printHelpFile() {
         cout << "FIDB uses a simple flatfile format called CSV. Originally known as \"Comma Separated Values\", the \nchoice of a delimiter (In the previous case, commas), are not limited to commas as CSV is an open arbitrary standard. Therefore, \nin FIDB, spaces are used instead to guarentee interoperability of the program. Newlines are used as row delimiters while spaces \nare used as column delimiters.\nFIDB accepts any ASCII encoded, space delimited CSV style document." << endl;
     } else {
         cout << "Invalid selection, exiting program" << endl;
-    }
-}
-
-/*
-    Prints the appropriate number of '-' characters for a certain number of columns
-
-    - parameter columnCount: the number of columns to print a separator for
-*/
-void printSeparator(int columnCount) {
-    for (int i = 0; i < 23*columnCount+1; i++) {
-        if (i == 23*columnCount) {
-            cout << "\n";
-        } else {
-            cout << "-";
-        }
     }
 }
