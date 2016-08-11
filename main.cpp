@@ -186,7 +186,7 @@ void printDBInRAM() {
     cout << "\nRow count: " << rowCount << endl;
     cout << "Column count: " << columnCount << endl << endl;
 
-    if (rowCount > 1) {
+    if (rowCount > 0) {
         printSeparator(columnCount);
     }
     for (int i = 0; i < rowCount; i++) {
@@ -202,7 +202,7 @@ void printDBInRAM() {
             cout << "\n";
         }
     }
-    if (rowCount > 1) {
+    if (rowCount > 0) {
         printSeparator(columnCount);
     }
     cout << endl;
@@ -353,7 +353,7 @@ void commitChanges() {
     - parameter string: the string to "sanitise"
     - returns: a string as a character array
 */
-char* sanitisedString(char* string) {
+char* sanitisedString(char string[]) {
     string[strlen(string)-1] = '\0';
     return string;
 }
