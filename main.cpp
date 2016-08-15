@@ -113,17 +113,15 @@ void startDBWithFileName() {
         cout << "\nNOTE: Database file is empty" << endl;
     } else {
         // Parse and insert database into RAM
-        // Getting by rows
         string line;
-        while (getline(dbFile, line)) {
+        while (getline(dbFile, line)) { // Getting by rows
             int localColumnCount = 0; // reset column count every time when the program gets to a new row
             // Turn the string into a C string (char array) for compliance with the cstring library
             char lineWithCString[100]; //I have to use a 100 for this as anything lower will cause an array out of bounds
             strcpy(lineWithCString, line.c_str());
-            char * pch; //pointer to the position of characters split by a delimiter
-            pch = strtok(lineWithCString, ","); //space as a delimiter, and yes, we need " " because it accepts only a const char *, NOT const char (in other words, char array, not char)
-            // Getting by columns
-            while (pch != NULL) {
+            char * pch; //this is a pointer to the position of characters split by a delimiter
+            pch = strtok(lineWithCString, ","); //comma as a delimiter, and yes, we need "," not ',' because it accepts only a const char *, NOT const char (in other words, char array, not char)
+            while (pch != NULL) { // Getting by columns
                 strcpy(database[rowCount][localColumnCount], pch);
                 localColumnCount++;
                 if (rowCount == 0) { // if it's first row, we populate the global column count as well
