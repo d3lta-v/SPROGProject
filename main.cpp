@@ -13,7 +13,7 @@ using namespace std;
 
 // Global variables
 // Primary database in RAM, constrained to 20 by 20 entries, totalling 8kb
-char database[20][20][20] = {0x0}; //init to all NULL values for safety
+char database[20][20][20] = {{{0}}}; //init to all NULL values for safety
 char databaseName[20]; //global storage for the database name
 // Database row and column counts
 int rowCount = 0;
@@ -33,8 +33,8 @@ void modify();
 void commitChanges();
 
 char* sanitisedString(char* string);
-int fileExists(fstream& pFile);
-int fileEmpty(fstream& pFile);
+int fileExists(fstream& fileToCheck);
+int fileEmpty(fstream& fileToCheck);
 
 void printHelpFile();
 void printSeparator(int columnCount);
@@ -121,7 +121,7 @@ void startDBWithFileName() {
             char lineWithCString[100]; //I have to use a 100 for this as anything lower will cause an array out of bounds
             strcpy(lineWithCString, line.c_str());
             char * pch; //pointer to the position of characters split by a delimiter
-            pch = strtok(lineWithCString, " "); //space as a delimiter, and yes, we need " " because it accepts only a const char *, NOT const char (in other words, char array, not char)
+            pch = strtok(lineWithCString, ","); //space as a delimiter, and yes, we need " " because it accepts only a const char *, NOT const char (in other words, char array, not char)
             // Getting by columns
             while (pch != NULL) {
                 strcpy(database[rowCount][localColumnCount], pch);
@@ -129,7 +129,7 @@ void startDBWithFileName() {
                 if (rowCount == 0) { // if it's first row, we populate the global column count as well
                     columnCount++;
                 }
-                pch = strtok(NULL, " ");
+                pch = strtok(NULL, ",");
             }
             rowCount++;
         }
@@ -302,7 +302,7 @@ void modify() {
 /// Write changes to database to file
 void commitChanges() {
     // Construct a single string that will write to the file, this process is essentially serialisation
-    char flatStringForFile[1000] = {0x0};
+    char flatStringForFile[1000] = {0}; //null array
     int currentFlatStrIndex = 0;
     // For loop for rows
     for (int i = 0; i < rowCount; i++) {
@@ -315,7 +315,7 @@ void commitChanges() {
                     currentFlatStrIndex++;
                 } else {
                     // next column
-                    flatStringForFile[currentFlatStrIndex] = ' ';
+                    flatStringForFile[currentFlatStrIndex] = ',';
                     currentFlatStrIndex++;
                     break;
                 }
@@ -361,21 +361,21 @@ char* sanitisedString(char string[]) {
 /*
     This method returns a boolean (int) that indicates if a file exists.
 
-    - parameter pFile: the fstream to check if the file exists
+    - parameter fileToCheck: the fstream to check if the file exists
     - returns: a boolean (int) stating if the file exists. 0 = does not exist, 1 = exists
 */
-int fileExists(fstream& pFile) {
-    return pFile.good();
+int fileExists(fstream& fileToCheck) {
+    return fileToCheck.good();
 }
 
 /*
     This method returns a boolean (int) that indicates if a file is empty
 
-    - parameter pFile: the fstream to check if the file is empty
+    - parameter fileToCheck: the fstream to check if the file is empty
     - returns: a boolean (int) stating if the file is empty (i.e. EOF character was found)
 */
-int fileEmpty(fstream& pFile) {
-    return pFile.peek() == fstream::traits_type::eof();
+int fileEmpty(fstream& fileToCheck) {
+    return fileToCheck.peek() == fstream::traits_type::eof();
 }
 
 /*
@@ -409,7 +409,7 @@ void printHelpFile() {
         cout << "Introduction to FIDB:\n";
         cout << "FIDB is a simple database management system for flatfile database systems.\n";
         cout << "Written in C++, and uses only basic C++ headers, such as iostream, iomanip, fstream and cstring\n";
-        cout << "The manager uses a command-line like system to interpret user input, and uses space delimited csv files.\n";
+        cout << "The manager uses a command-line like system to interpret user input, and uses comma delimited csv files.\n";
         cout << "However, this database only handles up to 20 rows by 20 columns by 20 characters, as a limitation of not\n being able to manually allocate memory due to time and library constraints" << endl;
     } else if (selection == 2) {
         cout << "Commands in FIDB:\n";
@@ -422,7 +422,7 @@ void printHelpFile() {
         cout << "EXIT/QUIT:\nExits the database manager. NOTE: This will NOT save the database to memory!" << endl;
     } else if (selection == 3) {
         cout << "File formats for FIDB:\n";
-        cout << "FIDB uses a simple flatfile format called CSV. Originally known as \"Comma Separated Values\", the \nchoice of a delimiter (In the previous case, commas), are not limited to commas as CSV is an open arbitrary standard. Therefore, \nin FIDB, spaces are used instead to guarentee interoperability of the program. Newlines are used as row delimiters while spaces \nare used as column delimiters.\nFIDB accepts any ASCII encoded, space delimited CSV style document." << endl;
+        cout << "FIDB uses a simple flatfile format called CSV. Originally known as \"Comma Separated Values\", the \nchoice of a delimiter (In the previous case, commas), are not limited to commas as CSV is an open arbitrary standard.\nIn FIDB, commas are used instead to guarentee interoperability of the program. Newlines are used as row delimiters while commas \nare used as column delimiters.\nFIDB accepts any ASCII encoded, comma delimited CSV style document." << endl;
     } else {
         cout << "Invalid selection, exiting program" << endl;
     }
